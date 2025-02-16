@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -113,7 +113,7 @@ class UserController extends Controller
             }
 
             // Revoke the current access token
-            $user->currentAccessToken()->delete();
+            $user()->currentAccessToken()->delete();
 
             return response()->json([
                 'status' => true,
