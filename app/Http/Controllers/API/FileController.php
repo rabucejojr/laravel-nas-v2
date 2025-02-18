@@ -83,6 +83,7 @@ class FileController extends Controller
                 'uploader' => $request->input('uploader'),
                 'category' => $request->input('category'),
                 'date' => $request->input('date'),
+                'filepath' => $path,
             ]);
 
             return response()->json(['message' => 'Upload successful']);
@@ -153,6 +154,7 @@ class FileController extends Controller
             'uploader' => $validated['uploader'],
             'category' => $validated['category'],
             'date' => $validated['date'],
+            'filepath' => $path,
         ]);
 
         return response()->json([

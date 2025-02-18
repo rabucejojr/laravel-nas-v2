@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('uploader');
             $table->string('category');
             $table->date('date');
+            $table->string('filepath');
             $table->timestamps();
         });
     }
