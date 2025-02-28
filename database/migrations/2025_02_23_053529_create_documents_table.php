@@ -11,8 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //  'tracking_number', 'title', 'subject', 'status','date_uploaded','deadline'
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
+            $table->string('tracking_number')->unique();
+            $table->string('title');
+            $table->string('subject');
+            $table->string('status');
+            $table->date('date_uploaded');
+            $table->date('deadline');
             $table->timestamps();
         });
     }
