@@ -11,5 +11,6 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/users/logout', 'logoutUser')->middleware('auth:sanctum'); // Protect logout route
 });
 Route::apiResource('/files', FileController::class);
-Route::get('/generate-code', [DocumentController::class, 'generateTrackingCode']);
+Route::apiResource('/document',DocumentController::class);
+Route::get('/generate-code',[DocumentController::class,'generateTrackingCode']);
 
