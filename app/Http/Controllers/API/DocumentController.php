@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Document;
 use Illuminate\Http\Request;
 
-
 class DocumentController extends Controller
 {
     public function generateTrackingCode()
@@ -16,11 +15,11 @@ class DocumentController extends Controller
 
         // Find the last document created today
         $lastDocument = Document::where('tracking_number', 'LIKE', "TRK-{$date}-%")
-                                ->orderBy('tracking_number', 'desc')
-                                ->first();
+            ->orderBy('tracking_number', 'desc')
+            ->first();
 
         // Extract the last sequence number and increment it
-        $lastSequence = $lastDocument ? (int)substr($lastDocument->tracking_number, -4) : 0;
+        $lastSequence = $lastDocument ? (int) substr($lastDocument->tracking_number, -4) : 0;
         $newSequence = str_pad($lastSequence + 1, 4, '0', STR_PAD_LEFT);
 
         // Generate new tracking number
@@ -28,6 +27,7 @@ class DocumentController extends Controller
 
         return response()->json(['tracking_number' => $trackingNumber]);
     }
+
     /**
      * Display a listing of the resource.
      */
