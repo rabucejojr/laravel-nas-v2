@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->string('tracking_number')->unique();
-            $table->string('filename');
+            $table->string('document');
             $table->string('title');
             $table->string('subject');
             $table->string('status');
