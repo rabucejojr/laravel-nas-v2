@@ -132,9 +132,9 @@ class DocumentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Document $document)
     {
-        //
+        return response()->json(['document' => $document]);
     }
 
     /**
