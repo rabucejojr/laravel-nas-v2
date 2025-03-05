@@ -10,6 +10,21 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
+
+    public function search(Request $request)
+    {
+        $query = Document::query();
+
+        if ($request->has('search')) {
+            $searchTerm = $request->input('search');
+            $query->where('tracking_number', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('title', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('subject', 'LIKE', "%{$searchTerm}%");
+        }
+
+        return response()->json($query->paginate(10)); // Paginate results
+    }
+
     /**
      * Generate a unique tracking number for each document.
      * Format: TRK-YYYYMMDD-XXXX (incremental per day)
