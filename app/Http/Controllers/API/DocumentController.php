@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-
     public function search(Request $request)
     {
         $query = Document::query();
@@ -18,8 +17,8 @@ class DocumentController extends Controller
         if ($request->has('search')) {
             $searchTerm = $request->input('search');
             $query->where('tracking_number', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('title', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('subject', 'LIKE', "%{$searchTerm}%");
+                ->orWhere('title', 'LIKE', "%{$searchTerm}%")
+                ->orWhere('subject', 'LIKE', "%{$searchTerm}%");
         }
 
         return response()->json($query->paginate(10)); // Paginate results
@@ -92,7 +91,7 @@ class DocumentController extends Controller
         $file = $request->file('document'); // Retrieve uploaded file
         $trackingCode = $this->generateTrackingCode(); // Generate unique tracking number
         $documentName = $file->getClientOriginalName(); // Get original file name
-        $path = 'PSTO-SDN-DTS/' . $documentName; // Define storage path
+        $path = 'PSTO-SDN-DTS/'.$documentName; // Define storage path
         $disk = Storage::disk('sftp'); // Define storage disk
 
         try {
@@ -181,8 +180,8 @@ class DocumentController extends Controller
 
         if ($request->hasFile('document')) {
             $uploadedFile = $request->file('document');
-            $documentName = time() . '_' . $uploadedFile->getClientOriginalName(); // Ensure unique filename
-            $path = 'PSTO-SDN-FMS/' . $documentName;
+            $documentName = time().'_'.$uploadedFile->getClientOriginalName(); // Ensure unique filename
+            $path = 'PSTO-SDN-FMS/'.$documentName;
 
             // Check if the file already exists
             if ($disk->exists($path)) {
@@ -195,7 +194,7 @@ class DocumentController extends Controller
             if ($disk->put($path, file_get_contents($uploadedFile))) {
                 // Delete the old file only if a previous file exists and is different
                 if ($document->document) {
-                    $oldPath = 'PSTO-SDN-FMS/' . $document->document;
+                    $oldPath = 'PSTO-SDN-FMS/'.$document->document;
                     if ($disk->exists($oldPath)) {
                         $disk->delete($oldPath);
                     }
@@ -225,7 +224,6 @@ class DocumentController extends Controller
             'file' => $document,
         ]);
     }
-
 
     /**
      * Remove the specified resource from storage.

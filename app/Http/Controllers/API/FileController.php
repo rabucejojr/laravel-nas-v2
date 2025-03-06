@@ -9,13 +9,14 @@ use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
-    public function search(Request $request){
+    public function search(Request $request)
+    {
         $query = $request->input('query');
         $files = File::where('filename', 'like', "%{$query}%")
-        ->orWhere('uploader', 'like', "%{$query}%")
-        ->orWhere('category', 'like', "%{$query}%")
-        ->orderBy('created_at', 'desc')
-        ->paginate(10);
+            ->orWhere('uploader', 'like', "%{$query}%")
+            ->orWhere('category', 'like', "%{$query}%")
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return response()->json($files);
     }
