@@ -131,10 +131,11 @@ class FileController extends Controller
             'date' => 'required|date',
         ]);
 
+        // Check if a new file is uploaded
         if ($request->hasFile('file')) {
             $uploadedFile = $request->file('file');
-            $filename = time().'_'.$uploadedFile->getClientOriginalName(); // Ensure unique filename
-            $path = 'PSTO-SDN-FMS/'.$filename;
+            $filename = time() . '_' . $uploadedFile->getClientOriginalName(); // Ensure unique filename
+            $path = 'PSTO-SDN-FMS/' . $filename;
 
             // Check if the file already exists
             if ($disk->exists($path)) {
@@ -146,13 +147,14 @@ class FileController extends Controller
             // Attempt to upload new file before deleting old one
             if ($disk->put($path, file_get_contents($uploadedFile))) {
                 // Delete the old file only if the new one was uploaded successfully
-                $oldPath = 'PSTO-SDN-FMS/'.$file->filename;
+                $oldPath = 'PSTO-SDN-FMS/' . $file->filename;
                 if ($disk->exists($oldPath)) {
                     $disk->delete($oldPath);
                 }
 
                 // Update filename in database
                 $file->filename = $filename;
+                $file->filepath = $path; // Update file path
             } else {
                 return response()->json([
                     'message' => 'Failed to upload file to SFTP server.',
@@ -160,13 +162,13 @@ class FileController extends Controller
             }
         }
 
-        // Update other file details in database
+        // Update other file details in the database
         $file->update([
             'filename' => $file->filename, // Ensure filename is updated
             'uploader' => $validated['uploader'],
             'category' => $validated['category'],
             'date' => $validated['date'],
-            'filepath' => $path,
+            'filepath' => $file->filepath ?? null, // Ensure filepath is not undefined
         ]);
 
         return response()->json([
@@ -174,6 +176,7 @@ class FileController extends Controller
             'file' => $file,
         ]);
     }
+
 
     /**
      * Remove the specified resource from storage.

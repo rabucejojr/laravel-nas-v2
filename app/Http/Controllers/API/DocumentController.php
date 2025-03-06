@@ -202,6 +202,7 @@ class DocumentController extends Controller
 
                 // Update filename in database
                 $document->document = $documentName;
+                $document->filepath = $path; // Update file path
             } else {
                 return response()->json([
                     'message' => 'Failed to upload document to SFTP server.',
