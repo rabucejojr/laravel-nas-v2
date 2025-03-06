@@ -134,8 +134,8 @@ class FileController extends Controller
         // Check if a new file is uploaded
         if ($request->hasFile('file')) {
             $uploadedFile = $request->file('file');
-            $filename = time() . '_' . $uploadedFile->getClientOriginalName(); // Ensure unique filename
-            $path = 'PSTO-SDN-FMS/' . $filename;
+            $filename = $uploadedFile->getClientOriginalName(); // Ensure unique filename
+            $path = 'PSTO-SDN-FMS/'.$filename;
 
             // Check if the file already exists
             if ($disk->exists($path)) {
@@ -147,7 +147,7 @@ class FileController extends Controller
             // Attempt to upload new file before deleting old one
             if ($disk->put($path, file_get_contents($uploadedFile))) {
                 // Delete the old file only if the new one was uploaded successfully
-                $oldPath = 'PSTO-SDN-FMS/' . $file->filename;
+                $oldPath = 'PSTO-SDN-FMS/'.$file->filename;
                 if ($disk->exists($oldPath)) {
                     $disk->delete($oldPath);
                 }
@@ -176,7 +176,6 @@ class FileController extends Controller
             'file' => $file,
         ]);
     }
-
 
     /**
      * Remove the specified resource from storage.
