@@ -21,7 +21,8 @@ class DocumentController extends Controller
                 ->orWhere('subject', 'LIKE', "%{$searchTerm}%");
         }
 
-        return response()->json($query->paginate(10)); // Paginate results
+        $documents = $query->paginate(10); // Paginate results
+        return response()->json($documents);
     }
 
     /**
