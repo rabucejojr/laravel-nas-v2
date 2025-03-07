@@ -89,59 +89,56 @@ class DocumentController extends Controller
             'deadline' => 'required|date',
         ]);
 
-        $file = $request->file('document'); // Retrieve uploaded file
-        $trackingCode = $this->generateTrackingCode(); // Generate unique tracking number
-        $documentName = $file->getClientOriginalName(); // Get original file name
-        $path = 'PSTO-SDN-DTS/'.$documentName; // Define storage path
         $disk = Storage::disk('sftp'); // Define storage disk
 
-        try {
+        if($validated){
+
+            $file = $request->file('document'); // Retrieve uploaded file
+            $trackingCode = $this->generateTrackingCode(); // Generate unique tracking number
+            $documentName = $file->getClientOriginalName(); // Get original file name
+            $path = 'PSTO-SDN-DTS/'.$documentName; // Define storage path
+
+
             // Check if the file already exists on the SFTP server
             if ($disk->exists($path)) {
-                return response()->json(['message' => 'File already exists on the SFTP server!'], 400);
+                return response()->json(['message' => 'Document already exists on the SFTP server!'], 400);
             }
 
-            // Check for duplicate entries in the database
-            if (Document::where([
+            //check if the file details already exist in the database
+            $existingFile = Document::where([
                 ['tracking_number', $trackingCode],
                 ['title', $validated['title']],
                 ['subject', $validated['subject']],
                 ['status', $validated['status']],
                 ['date_uploaded', $validated['date_uploaded']],
                 ['deadline', $validated['deadline']],
-            ])->exists()) {
-                return response()->json(['message' => 'File details already exist in the system!'], 400);
+            ])->first();
+
+            if ($existingFile) {
+                return response()->json([
+                    'message' => 'Document details already exist in the system!',
+                ], 400);
             }
 
-            DB::beginTransaction(); // Start database transaction
+            $fileUploadSuccess = $disk->put($path, file_get_contents($file));
 
-            // Upload file to SFTP server
-            if (! $disk->putFileAs('PSTO-SDN-DTS', $file, $documentName)) {
-                DB::rollBack(); // Rollback transaction if upload fails
-
-                return response()->json(['message' => 'File upload failed!'], 500);
+            if (! $fileUploadSuccess) {
+                return response()->json(['message' => 'Upload failed'], 500);
             }
 
-            // Store document details in the database
             Document::create([
                 'tracking_number' => $trackingCode,
-                'document' => $documentName,
-                'title' => $validated['title'],
-                'subject' => $validated['subject'],
-                'status' => $validated['status'],
-                'date_uploaded' => $validated['date_uploaded'],
-                'deadline' => $validated['deadline'],
-                'filepath' => $path,
+                'title' => $request->input('title'),
+                'subject' => $request->input('subject'),
+                'status' => $request->input('status'),
+                'date_uploaded' => $request->input('date_uploaded'),
+                'deadline' => $request->input('deadline'),
             ]);
 
-            DB::commit(); // Commit transaction
-
-            return response()->json(['message' => 'Upload successful'], 201);
-        } catch (\Exception $e) {
-            DB::rollBack(); // Rollback changes in case of error
-
-            return response()->json(['message' => 'An error occurred during upload', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Upload successful']);
         }
+
+        return response()->json(['message' => 'Upload failed'], 400);
     }
 
     /**
