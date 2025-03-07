@@ -180,7 +180,7 @@ class DocumentController extends Controller
 
         if ($request->hasFile('document')) {
             $uploadedFile = $request->file('document');
-            $documentName = time().'_'.$uploadedFile->getClientOriginalName(); // Ensure unique filename
+            $documentName = $uploadedFile->getClientOriginalName(); // Ensure unique filename
             $path = 'PSTO-SDN-FMS/'.$documentName;
 
             // Check if the file already exists
@@ -202,7 +202,6 @@ class DocumentController extends Controller
 
                 // Update filename in database
                 $document->document = $documentName;
-                $document->filepath = $path; // Update file path
             } else {
                 return response()->json([
                     'message' => 'Failed to upload document to SFTP server.',
