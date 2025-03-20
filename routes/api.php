@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\DocumentController;
 use App\Http\Controllers\API\FileController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\SFTPController;
 use Illuminate\Support\Facades\Route;
 
 // User routes
@@ -21,3 +22,4 @@ Route::get('document/generate-code', [DocumentController::class, 'generateTracki
 // Search endpoints
 Route::get('/document/search', [DocumentController::class, 'search']);
 Route::get('/file/search', [FileController::class, 'search']);
+Route::get('/sftp/size', [SFTPController::class, 'getStorageDetails']);
