@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Request;
-use phpseclib3\Net\SSH2;
 
 class SFTPController extends Controller
 {

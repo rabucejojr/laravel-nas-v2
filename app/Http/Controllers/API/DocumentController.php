@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
@@ -22,6 +21,7 @@ class DocumentController extends Controller
         }
 
         $documents = $query->paginate(10); // Paginate results
+
         return response()->json($documents);
     }
 
@@ -91,20 +91,19 @@ class DocumentController extends Controller
 
         $disk = Storage::disk('sftp'); // Define storage disk
 
-        if($validated){
+        if ($validated) {
 
             $file = $request->file('document'); // Retrieve uploaded file
             $trackingCode = $this->generateTrackingCode(); // Generate unique tracking number
             $documentName = $file->getClientOriginalName(); // Get original file name
             $path = 'PSTO-SDN-DTS/'.$documentName; // Define storage path
 
-
             // Check if the file already exists on the SFTP server
             if ($disk->exists($path)) {
                 return response()->json(['message' => 'Document already exists on the SFTP server!'], 400);
             }
 
-            //check if the file details already exist in the database
+            // check if the file details already exist in the database
             $existingFile = Document::where([
                 ['tracking_number', $trackingCode],
                 ['title', $validated['title']],

@@ -19,6 +19,7 @@ class FileController extends Controller
             ->paginate(10);
 
         $files = $query->paginate(10); // Paginate results
+
         return response()->json($files);
     }
 
@@ -63,7 +64,7 @@ class FileController extends Controller
         if ($validated) {
             $file = $request->file('file');
             $filename = $file->getClientOriginalName();
-            $path = 'PSTO-SDN-FMS/' . $filename;
+            $path = 'PSTO-SDN-FMS/'.$filename;
 
             // Check if file already exists in storage
             if ($disk->exists($path)) {
@@ -136,7 +137,7 @@ class FileController extends Controller
         if ($request->hasFile('file')) {
             $uploadedFile = $request->file('file');
             $filename = $uploadedFile->getClientOriginalName(); // Ensure unique filename
-            $path = 'PSTO-SDN-FMS/' . $filename;
+            $path = 'PSTO-SDN-FMS/'.$filename;
 
             // Check if the file already exists
             if ($disk->exists($path)) {
@@ -148,7 +149,7 @@ class FileController extends Controller
             // Attempt to upload new file before deleting old one
             if ($disk->put($path, file_get_contents($uploadedFile))) {
                 // Delete the old file only if the new one was uploaded successfully
-                $oldPath = 'PSTO-SDN-FMS/' . $file->filename;
+                $oldPath = 'PSTO-SDN-FMS/'.$file->filename;
                 if ($disk->exists($oldPath)) {
                     $disk->delete($oldPath);
                 }
@@ -186,7 +187,7 @@ class FileController extends Controller
     public function destroy(File $file)
     {
         $disk = Storage::disk('sftp');
-        $filePath = 'PSTO-SDN-FMS/' . $file->filename;
+        $filePath = 'PSTO-SDN-FMS/'.$file->filename;
 
         if ($disk->exists($filePath)) {
             $disk->delete($filePath);
