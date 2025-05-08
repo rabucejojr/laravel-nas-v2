@@ -59,11 +59,12 @@ class NasStorageController extends Controller
             $sizeInfo = $storageData['data']['volumes'][0]['size'];
 
             // Convert bytes to gigabytes (GB) and round to 2 decimal places
-            $total = round((float) $sizeInfo['total'] / (1024 ** 3), 2);
+            $total = round((float) $sizeInfo['total'] / (1024 ** 4), 2);
             $used = round((float) $sizeInfo['used'] / (1024 ** 3), 2);
             $free = round($total - $used, 2);
 
             return response()->json([
+                'total_storage' => $total,
                 'used_storage' => $used,
                 'free_storage' => $free,
             ]);
